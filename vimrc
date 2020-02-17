@@ -21,12 +21,17 @@ set backspace=indent,eol,start        " backspace
 set nocompatible                      " be iMproved
 set clipboard=unnamed,autoselect      " c & p
 set ignorecase
-"set guifont=FiraCode-Regular:h12
 set hlsearch
+" metals 
+set updatetime=300
 
 "======================================= [ Nerdtree ] ==============================================
 call plug#begin()
+  Plug 'relastle/bluewery.vim'
   Plug 'tomtom/tcomment_vim'
+  Plug 'plasticboy/vim-markdown'
+  Plug 'kannokanno/previm'
+  Plug 'tyru/open-browser.vim'
   Plug 'itchyny/calendar.vim'
   Plug 'Yggdroot/indentLine'
   Plug 'https://github.com/mizukmb/otenki.vim'
@@ -51,10 +56,7 @@ call plug#begin()
   Plug 'derekwyatt/vim-scala'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
-  Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
-  " Or install latest release tag
   Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
-  " Or build from source code
   Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 call plug#end()
 
@@ -70,6 +72,17 @@ au BufNewFile,BufRead *.scala syntax keyword scalaIdentifier Ok
 colorscheme darcula
 "colorscheme onedark
 "colorscheme solarized
+"colorscheme bluewery
+"let g:lightline = { 'colorscheme': 'bluewery' }
+"let g:lightline = { 'colorscheme': 'bluewery_light' }
+
+if has('vim_starting')
+    let &t_SI .= "\e[6 q"
+    let &t_EI .= "\e[2 q"
+    let &t_SR .= "\e[4 q"
+endif
+
+let g:omni_sql_no_default_maps = 1
 
 "====================================== [ Nerdtree ] =================================================
 " auto Needtree
@@ -88,13 +101,13 @@ nnoremap <M-D-up> :bo term<Return>
 nnoremap <D-M-right> gt
 nnoremap <D-M-left> gT
 
-" syntax on
-nnoremap <C-s> :syntax on<Return>
-
 " all select
 noremap h ggVG
 
 "Needtree tab chenge
+noremap  <M-right> :tabNext<Enter>
+noremap  <M-left> :tabprevious<Enter>
+noremap  <C-t> :tabnew<Enter>
 noremap  <S-left>  <C-w>h
 noremap  <S-right> <C-w>w
 nnoremap <D-d>     :vsplit<Return>
@@ -135,10 +148,20 @@ endfunction
 "========================================== [ metals ] ===================================================
 " metals
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gy :<C-u>call CocAction('doHover')<cr>
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <C-e> :lopen<Enter>
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
 
 " metals build
 nnoremap call :call CocRequestAsync('metals', 'workspace/executeCommand', { 'command': 'build-import' })
@@ -160,6 +183,8 @@ augroup end
 
 " autocomplete
 inoremap <TAB> <C-n>
+
+nnoremap <C-s> :syntax on<Enter>
 
 " color group name
 function! s:get_syn_id(transparent)
@@ -207,9 +232,27 @@ command! -bang -nargs=* Rg
       \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
       \   <bang>0)
 
+"============================================ [ markdown preview ] =================================================
+au BufRead,BufNewFile *.md set filetype=markdown
 "============================================= [ google calender ] ==================================================
 nnoremap <C-c> :Calendar -day<Enter>
 let g:calendar_google_calendar = 1
 let g:calendar_google_task     = 1
 "================================================= [ tenki ] ========================================================
 nnoremap <space>o :Otenki<Return>
+
+"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+if (empty($TMUX))
+  if (has("nvim"))
+    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
+  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+endif
