@@ -42,6 +42,7 @@ call plug#begin()
   Plug 'https://github.com/mizukmb/otenki.vim'
   Plug 'https://github.com/mattn/webapi-vim'
   Plug 'junegunn/goyo.vim'
+  Plug 'arcticicestudio/nord-vim'
   Plug 'joshdick/onedark.vim'
   Plug 'airblade/vim-gitgutter'
   Plug 'leafgarland/typescript-vim'
@@ -75,8 +76,9 @@ autocmd FileType scala setlocal nomodeline
 au BufNewFile,BufRead *.scala syntax keyword scalaIdentifier Ok
 
 "colorscheme dark_plus
-colorscheme darcula
+"colorscheme darcula
 "colorscheme onedark
+colorscheme nord
 
 if has('vim_starting')
     let &t_SI .= "\e[6 q"
@@ -276,62 +278,113 @@ nnoremap <silent> <C-Left>  :call animate#window_delta_width(10)<CR>
 nnoremap <silent> <C-Right> :call animate#window_delta_width(-10)<CR>
 
 
-let g:lightline = {
-        \ 'colorscheme': 'wombat',
-        \ 'mode_map': {'c': 'NORMAL'},
-        \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
-        \ },
-        \ 'component_function': {
-        \   'modified': 'LightlineModified',
-        \   'readonly': 'LightlineReadonly',
-        \   'fugitive': 'LightlineFugitive',
-        \   'filename': 'LightlineFilename',
-        \   'fileformat': 'LightlineFileformat',
-        \   'filetype': 'LightlineFiletype',
-        \   'fileencoding': 'LightlineFileencoding',
-        \   'mode': 'LightlineMode'
-        \ }
-        \ }
+"let g:lightline = {
+"        \ 'colorscheme': 'onedark',
+"        \ 'mode_map': {'c': 'NORMAL'},
+"        \ 'active': {
+"        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+"        \ },
+"        \ 'component_function': {
+"        \   'modified': 'LightlineModified',
+"        \   'readonly': 'LightlineReadonly',
+"        \   'fugitive': 'LightlineFugitive',
+"        \   'filename': 'LightlineFilename',
+"        \   'fileformat': 'LightlineFileformat',
+"        \   'filetype': 'LightlineFiletype',
+"        \   'fileencoding': 'LightlineFileencoding',
+"        \   'mode': 'LightlineMode'
+"        \ }
+"        \ }
+"
+"function! LightlineModified()
+"  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+"endfunction
+"
+"function! LightlineReadonly()
+"  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+"endfunction
+"
+"function! LightlineFilename()
+"  return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+"        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+"        \  &ft == 'unite' ? unite#get_status_string() :
+"        \  &ft == 'vimshell' ? vimshell#get_status_string() :
+"        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+"        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+"endfunction
+"
+"function! LightlineFugitive()
+"  if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+"    return fugitive#head()
+"  else
+"    return ''
+"  endif
+"endfunction
+"
+"function! LightlineFileformat()
+"  return winwidth(0) > 70 ? &fileformat : ''
+"endfunction
+"
+"function! LightlineFiletype()
+"  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+"endfunction
+"
+"function! LightlineFileencoding()
+"  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+"endfunction
+"
+"function! LightlineMode()
+"  return winwidth(0) > 60 ? lightline#mode() : ''
+"endfunction
 
-function! LightlineModified()
-  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-endfunction
+let g:airline_theme='onedark'
+set ambiwidth=double
 
-function! LightlineReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
-endfunction
+set laststatus=2
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#whitespace#mixed_indent_algo = 1
+let g:airline_theme = 'papercolor'
 
-function! LightlineFilename()
-  return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \  &ft == 'unite' ? unite#get_status_string() :
-        \  &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
-endfunction
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
 
-function! LightlineFugitive()
-  if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
-    return fugitive#head()
-  else
-    return ''
-  endif
-endfunction
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.maxlinenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
 
-function! LightlineFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
-endfunction
+" powerline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
 
-function! LightlineFiletype()
-  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
-endfunction
-
-function! LightlineFileencoding()
-  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
-endfunction
-
-function! LightlineMode()
-  return winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
+" old vim-powerline symbols
+" let g:airline_left_sep = '⮀'
+" let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+" let g:airline_symbols.branch = '⭠'
+" let g:airline_symbols.readonly = '⭤'
+" let g:airline_symbols.linenr = '⭡'
 
