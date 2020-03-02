@@ -29,6 +29,7 @@ set norelativenumber
 
 "======================================= [ Nerdtree ] ==============================================
 call plug#begin()
+  Plug 'ctrlpvim/ctrlp.vim'
   Plug 'itchyny/lightline.vim'
   Plug 'camspiers/animate.vim'
   Plug 'othree/html5.vim'
