@@ -19,7 +19,7 @@ set statusline=%{F}
 set noswapfile                        
 set backspace=indent,eol,start        " backspace
 set nocompatible                      " be iMproved
-set clipboard=unnamed,autoselect      " c & p
+set clipboard=unnamed,autoselect      " Hello world
 set ignorecase
 set hlsearch
 " metals 
@@ -27,46 +27,39 @@ set updatetime=300
 set nocursorline
 set norelativenumber
 
-"======================================= [ Nerdtree ] ==============================================
+" ======================================= [ Reader ]
+let mapleader = "\<Space>"
+"======================================= [ Nerdtree ]
 call plug#begin()
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'itchyny/lightline.vim'
   Plug 'camspiers/animate.vim'
-  Plug 'othree/html5.vim'
   Plug 'relastle/bluewery.vim'
-  Plug 'tomtom/tcomment_vim'
-  Plug 'plasticboy/vim-markdown'
   Plug 'kannokanno/previm'
   Plug 'tyru/open-browser.vim'
-  Plug 'itchyny/calendar.vim'
   Plug 'Yggdroot/indentLine'
-  Plug 'https://github.com/mizukmb/otenki.vim'
-  Plug 'https://github.com/mattn/webapi-vim'
-  Plug 'junegunn/goyo.vim'
   Plug 'arcticicestudio/nord-vim'
   Plug 'joshdick/onedark.vim'
   Plug 'airblade/vim-gitgutter'
+  Plug 'othree/html5.vim'
   Plug 'leafgarland/typescript-vim'
-  Plug 'alvan/vim-closetag'    
+  Plug 'posva/vim-vue'
+  Plug 'digitaltoad/vim-pug'
+  Plug 'derekwyatt/vim-scala'
+  Plug 'gre/play2vim'
+  Plug 'alvan/vim-closetag' 
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-sensible'
-  Plug 'derekwyatt/vim-scala'
-  Plug 'modess/vim-phpcolors'
-  Plug 'tomasiser/vim-code-dark'
   Plug 'blueshirts/darcula'
   Plug 'scrooloose/nerdtree'
-  Plug 'gre/play2vim'
-  Plug 'digitaltoad/vim-pug'
-  Plug 'curist/vim-angular-template'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  Plug 'posva/vim-vue'
-  Plug 'derekwyatt/vim-scala'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
-  Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
-  Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
+
+set nocompatible
 
 filetype plugin indent on
 filetype indent on
@@ -78,8 +71,8 @@ au BufNewFile,BufRead *.scala syntax keyword scalaIdentifier Ok
 
 "colorscheme dark_plus
 "colorscheme darcula
-"colorscheme onedark
-colorscheme nord
+colorscheme onedark
+"colorscheme nord
 
 if has('vim_starting')
     let &t_SI .= "\e[6 q"
@@ -89,74 +82,72 @@ endif
 
 let g:omni_sql_no_default_maps = 1
 
-"====================================== [ Nerdtree ] =================================================
+" ===================================== [ usually command ]
+noremap <Leader><C-s> :syntax on<Enter>
+" 行頭へ移動
+noremap <C-a> ^
+inoremap <C-a> <Home>
+" 行末へ移動
+noremap <C-e> $
+inoremap <C-e> <End>
+nnoremap ˙ gT
+nnoremap ¬ gt
+noremap <C-s> o
+noremap w b
+
+nnoremap :term :bo term<Return>
+nnoremap ; :
+
+" move tab
+nnoremap <D-M-right> gt
+nnoremap <D-M-left> gT
+
+"Needtree tab chenge
+noremap  <C-t> :tabnew<Enter>
+nnoremap <Leader>vs :vsplit<Return>
+nnoremap <Leader>s  :split<Return>
+
+"Shift + Return -> esc
+inoremap <C-g> <ESC>
+"====================================== [ Nerdtree ]
 " auto Needtree
 autocmd vimenter * NERDTree
 autocmd TabNew * call timer_start(0, { -> execute('NERDTree') })
 " when vim finished
 autocmd bufenter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree()) | q | endif
 " find currnt file
-nnoremap <C-l> :NERDTreeFind<Return>
+nnoremap <Leader>sf :NERDTreeFind<Return>
 " new Nerdtree
-nnoremap n :NERDTree<Return>
-"====================================== [ shortcut ] =================================================
-nnoremap <M-D-up> :bo term<Return>
+nnoremap <Leader>n :NERDTree<Return>
 
-" move tab
-nnoremap <D-M-right> gt
-nnoremap <D-M-left> gT
-
-" all select
-noremap h ggVG
-
-"Needtree tab chenge
-noremap  <M-right> :tabNext<Enter>
-noremap  <M-left> :tabprevious<Enter>
-noremap  <C-t> :tabnew<Enter>
-noremap  <S-left>  <C-w>h
-noremap  <S-right> <C-w>w
-nnoremap <D-d>     :vsplit<Return>
-nnoremap <C-d>     :split<Return>
-
-"Shift + Return -> esc
-inoremap <S-Return> <ESC>
-" when I'm staing, push q => quit 
-nnoremap q :q
-
-" Cursor select "
-nnoremap <D-/> <C-v>
-nnoremap <C-z> <C-^>
-
-"========================================== [ fzf ] ==================================================
+"========================================== [ fzf ]
 " fzf commands "
-nnoremap ff :Files<Enter>
-nnoremap <C-b> :BLines<Return>
-nnoremap gh :History<Enter>
-nnoremap gg :Gfiles<Enter>
-nnoremap <C-f> :Rg<Enter>
+nnoremap <Leader><C-f> :GFiles<Enter>
+nnoremap <Leader><C-l> :BLines<Return>
+nnoremap <Leader><C-h> :History<Enter>
+nnoremap <Leader>ss :Rg<Enter>
 
 " ff
-command! -bang -nargs=? -complete=dir Files
-\ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-" gg
 command! -bang -nargs=? -complete=dir GFiles
 \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-" rg
-command! -bang -nargs=? -complete=dir Rg
-\ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+" Rg
+command! -bang -nargs=* Rg
+\ call fzf#vim#grep(
+\ 'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+\ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+\ : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+\ <bang>0)
 
 function! s:find_git_root()
   return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
 endfunction
-"========================================== [ metals ] ===================================================
+"========================================== [ metals ]
 " metals
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy :<C-u>call CocAction('doHover')<cr>
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nmap <C-e> :lopen<Enter>
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
 function! s:show_documentation()
@@ -166,12 +157,12 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
-
+nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
 
 " metals build
 nnoremap call :call CocRequestAsync('metals', 'workspace/executeCommand', { 'command': 'build-import' })
 
-"============================================ [ other ] ===================================================
+"============================================ [ other ]
 
 " indent nest
 inoremap {<Enter> {}<Left><CR><ESC><S-o>
@@ -186,10 +177,6 @@ augroup mygroup
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
-" autocomplete
-inoremap <TAB> <C-n>
-
-nnoremap <C-s> :syntax on<Enter>
 
 " color group name
 function! s:get_syn_id(transparent)
@@ -237,14 +224,8 @@ command! -bang -nargs=* Rg
       \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
       \   <bang>0)
 
-"============================================ [ markdown preview ] =================================================
+"============================================ [ markdown preview ]
 au BufRead,BufNewFile *.md set filetype=markdown
-"============================================= [ google calender ] ==================================================
-"nnoremap <C-c> :Calendar -day<Enter>
-"let g:calendar_google_calendar = 1
-"let g:calendar_google_task     = 1
-"================================================= [ tenki ] ========================================================
-nnoremap <space>o :Otenki<Return>
 
 if (empty($TMUX))
   if (has("nvim"))
@@ -278,114 +259,8 @@ nnoremap <silent> <C-Down>  :call animate#window_delta_height(-10)<CR>
 nnoremap <silent> <C-Left>  :call animate#window_delta_width(10)<CR>
 nnoremap <silent> <C-Right> :call animate#window_delta_width(-10)<CR>
 
-
-"let g:lightline = {
-"        \ 'colorscheme': 'onedark',
-"        \ 'mode_map': {'c': 'NORMAL'},
-"        \ 'active': {
-"        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
-"        \ },
-"        \ 'component_function': {
-"        \   'modified': 'LightlineModified',
-"        \   'readonly': 'LightlineReadonly',
-"        \   'fugitive': 'LightlineFugitive',
-"        \   'filename': 'LightlineFilename',
-"        \   'fileformat': 'LightlineFileformat',
-"        \   'filetype': 'LightlineFiletype',
-"        \   'fileencoding': 'LightlineFileencoding',
-"        \   'mode': 'LightlineMode'
-"        \ }
-"        \ }
-"
-"function! LightlineModified()
-"  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-"endfunction
-"
-"function! LightlineReadonly()
-"  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
-"endfunction
-"
-"function! LightlineFilename()
-"  return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-"        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-"        \  &ft == 'unite' ? unite#get_status_string() :
-"        \  &ft == 'vimshell' ? vimshell#get_status_string() :
-"        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-"        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
-"endfunction
-"
-"function! LightlineFugitive()
-"  if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
-"    return fugitive#head()
-"  else
-"    return ''
-"  endif
-"endfunction
-"
-"function! LightlineFileformat()
-"  return winwidth(0) > 70 ? &fileformat : ''
-"endfunction
-"
-"function! LightlineFiletype()
-"  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
-"endfunction
-"
-"function! LightlineFileencoding()
-"  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
-"endfunction
-"
-"function! LightlineMode()
-"  return winwidth(0) > 60 ? lightline#mode() : ''
-"endfunction
-
-let g:airline_theme='onedark'
-set ambiwidth=double
-
-set laststatus=2
-let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#whitespace#mixed_indent_algo = 1
-let g:airline_theme = 'papercolor'
-
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-" unicode symbols
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
-let g:airline_symbols.crypt = '🔒'
-let g:airline_symbols.linenr = '␊'
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.maxlinenr = '☰'
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.paste = 'Þ'
-let g:airline_symbols.paste = '∥'
-let g:airline_symbols.spell = 'Ꞩ'
-let g:airline_symbols.notexists = '∄'
-let g:airline_symbols.whitespace = 'Ξ'
-
-" powerline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
-
-" old vim-powerline symbols
-" let g:airline_left_sep = '⮀'
-" let g:airline_left_alt_sep = '⮁'
-let g:airline_right_sep = '⮂'
-let g:airline_right_alt_sep = '⮃'
-" let g:airline_symbols.branch = '⭠'
-" let g:airline_symbols.readonly = '⭤'
-" let g:airline_symbols.linenr = '⭡'
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_theme = 'badwolf'
 
