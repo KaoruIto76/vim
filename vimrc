@@ -15,7 +15,7 @@ set shiftwidth=2                      " Tab's size
 set expandtab
 set showmatch                       
 set title                             " title
-set statusline=%{F}
+"set statusline=%{F}
 set noswapfile                        
 set backspace=indent,eol,start        " backspace
 set nocompatible                      " be iMproved
@@ -31,27 +31,24 @@ set norelativenumber
 let mapleader = "\<Space>"
 "======================================= [ Nerdtree ]
 call plug#begin()
-  Plug 'ctrlpvim/ctrlp.vim'
   Plug 'itchyny/lightline.vim'
-  Plug 'camspiers/animate.vim'
-  Plug 'relastle/bluewery.vim'
-  Plug 'kannokanno/previm'
-  Plug 'tyru/open-browser.vim'
+  "Plug 'relastle/bluewery.vim'
+  Plug 'kannokanno/previm',{ 'for': ['md'] }
+  Plug 'tyru/open-browser.vim',{ 'for': ['md'] }
   Plug 'Yggdroot/indentLine'
-  Plug 'arcticicestudio/nord-vim'
   Plug 'joshdick/onedark.vim'
   Plug 'airblade/vim-gitgutter'
-  Plug 'othree/html5.vim'
-  Plug 'leafgarland/typescript-vim'
-  Plug 'posva/vim-vue'
-  Plug 'digitaltoad/vim-pug'
-  Plug 'derekwyatt/vim-scala'
+  Plug 'othree/html5.vim',{ 'for': ['html'] }
+  Plug 'leafgarland/typescript-vim',{ 'for': ['ts'] }
+  Plug 'posva/vim-vue',{ 'for': ['vue'] }
+  Plug 'digitaltoad/vim-pug',{ 'for': ['pug'] }
+  Plug 'derekwyatt/vim-scala',{ 'for': ['scala'] }
   Plug 'gre/play2vim'
   Plug 'alvan/vim-closetag' 
-  Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-fugitive',{ 'on': 'Gdiff' }
   Plug 'tpope/vim-sensible'
   Plug 'blueshirts/darcula'
-  Plug 'scrooloose/nerdtree'
+  Plug 'scrooloose/nerdtree',{ 'on': 'NERDTreeToggle' }
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -259,8 +256,14 @@ nnoremap <silent> <C-Down>  :call animate#window_delta_height(-10)<CR>
 nnoremap <silent> <C-Left>  :call animate#window_delta_width(10)<CR>
 nnoremap <silent> <C-Right> :call animate#window_delta_width(-10)<CR>
 
+syntax enable
+set showtabline=2
+let g:airline_theme = 'onedark'
+" powerline enable(最初に設定しないとダメ)
+let g:airline_powerline_fonts = 1
+" タブバーをかっこよく
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_theme = 'badwolf'
-
+" 選択行列の表示をカスタム(デフォルトだと長くて横幅を圧迫するので最小限に)
+let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
+" gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
+let g:airline#extensions#hunks#enabled = 0
