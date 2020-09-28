@@ -32,9 +32,13 @@ set termguicolors
 let mapleader = "\<Space>"
 
 " ===================================== [ usually command ]
+tnoremap <silent> <C-g> <C-\><C-n>
+tnoremap <silent> <Esc> <C-\><C-n>
+ 
+noremap f /
 noremap <Leader><C-s> :syntax on<Enter>
 " 行頭へ移動
-noremap <C-a> ^
+noremap <C-b> 0
 inoremap <C-a> <Home>
 " 行末へ移動
 noremap <C-e> $
@@ -47,33 +51,28 @@ noremap w b
 nnoremap :term :bo term<Return>
 nnoremap ; :
 
-" move tab
-nnoremap <D-M-right> gt
-nnoremap <D-M-left> gT
-
 "Needtree tab chenge
-noremap  <C-t> :tabnew<Enter>
+noremap  <Leader>v <C-v>
+noremap  <Leader>t :tabnew<Enter>
 nnoremap <Leader>vs :vsplit<Return>
 nnoremap <Leader>s  :split<Return>
 
-"Shift + Return -> esc
 inoremap <C-g> <ESC>
+noremap <Leader><C-g> :term lazygit<Enter>
+inoremap <TAB> <C-n>
 
 " ====================================================== [ dein ]
 if &compatible
-  set nocompatible               " Be iMproved
+  set nocompatible
 endif
+" Add the dein installation directory into runtimepath
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
-" Required:
-set runtimepath+=/Users/itoukaoru/.cache/dein/repos/github.com/Shougo/dein.vim
-" Required:
-if dein#load_state('/Users/itoukaoru/.cache/dein')
-  call dein#begin('/Users/itoukaoru/.cache/dein')
+if dein#load_state('~/.cache/dein')
+  call dein#begin('~/.cache/dein')
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('/Users/itoukaoru/.cache/dein/repos/github.com/Shougo/dein.vim')
-
+  call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
+  call dein#add('Shougo/deoplete.nvim')
   " Add or remove your plugins here like this:
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
@@ -81,20 +80,26 @@ if dein#load_state('/Users/itoukaoru/.cache/dein')
   call dein#add('joshdick/onedark.vim')
   call dein#add('Yggdroot/indentLine')
   call dein#add('airblade/vim-gitgutter')
+  call dein#add('digitaltoad/vim-pug')
   call dein#add('othree/html5.vim')
+  call dein#add('gre/play2vim')
   call dein#add('leafgarland/typescript-vim')
   call dein#add('derekwyatt/vim-scala')
   call dein#add('alvan/vim-closetag')
   call dein#add('tpope/vim-fugitive')
-  call dein#add('junegunn/fzf')
+  call dein#add('junegunn/fzf',{'build': './install --all'})
   call dein#add('junegunn/fzf.vim')
   call dein#add('neoclide/coc.nvim')
   call dein#add('Shougo/defx.nvim')
+  call dein#add('markonm/traces.vim')
 
-  " Required:
   call dein#end()
   call dein#save_state()
 endif
+
+filetype plugin indent on
+syntax enable
+
 
 " Required:
 filetype plugin indent on
@@ -133,6 +138,7 @@ endfunction
 
 "========================================== [ metals ]
 " metals
+nmap <silent> <Leader>ws <Plug>(coc-metals-expand-decoration)
 nmap <silent> <Leader>gd <Plug>(coc-definition)
 nmap <silent> <Leader>gy :<C-u>call CocAction('doHover')<cr>
 nmap <silent> <Leader>gi <Plug>(coc-implementation)
@@ -168,6 +174,7 @@ call defx#custom#option('_', {
       \ 'buffer_name': 'exlorer',
       \ 'toggle': 1,
       \ 'resume': 1,
+      \ 'columns': 'mark:indent:git:icons:filename:type',
       \ })
 
 autocmd BufWritePost * call defx#redraw()
@@ -244,6 +251,18 @@ function! s:defx_my_settings() abort
   nnoremap <silent><buffer><expr> cd
   \ defx#do_action('change_vim_cwd')
 endfunction
+
+" Config for defx-git
+call defx#custom#column('git', 'indicators', {
+  \ 'Modified'  : '✹',
+  \ 'Staged'    : '✚',
+  \ 'Untracked' : '✭',
+  \ 'Renamed'   : '➜',
+  \ 'Unmerged'  : '═',
+  \ 'Ignored'   : '☒',
+  \ 'Deleted'   : '✖',
+  \ 'Unknown'   : '?'
+  \ })
 
 " ============================================== [ airline ]
 syntax enable
