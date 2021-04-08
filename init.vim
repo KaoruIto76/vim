@@ -22,15 +22,11 @@ set nocompatible                      " be iMproved
 set clipboard=unnamed                 " Hello world
 set ignorecase
 set hlsearch
-" metals 
-set updatetime=300
+" metals set updatetime=300
 set nocursorline
 set norelativenumber
-set termguicolors
-
 " ======================================= [ Reader ]
 let mapleader = "\<Space>"
-
 " ===================================== [ usually command ]
 tnoremap <silent> <C-g> <C-\><C-n>
 tnoremap <silent> <Esc> <C-\><C-n>
@@ -47,29 +43,37 @@ nnoremap ˙ gT
 nnoremap ¬ gt
 noremap <C-s> o
 noremap w b
-
 nnoremap :term :bo term<Return>
 nnoremap ; :
-
 "Needtree tab chenge
 noremap  <Leader>v <C-v>
 noremap  <Leader>t :tabnew<Enter>
 nnoremap <Leader>vs :vsplit<Return>
 nnoremap <Leader>s  :split<Return>
-
 inoremap <C-g> <ESC>
 noremap <Leader><C-g> :term lazygit<Enter>
 inoremap <TAB> <C-n>
-
 " ====================================================== [ dein ]
 if &compatible
   set nocompatible
 endif
+
+" dein.vimインストール時に指定したディレクトリをセット
+let s:dein_dir = expand('~/.cache/dein')
+
+" dein.vimの実体があるディレクトリをセット
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+
 " Add the dein installation directory into runtimepath
 set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
-
 if dein#load_state('~/.cache/dein')
   call dein#begin('~/.cache/dein')
+  " dein.toml, dein_layz.tomlファイルのディレクトリをセット
+  let s:toml_dir = expand('~/.config/nvim')
+  " 起動時に読み込むプラグイン群
+  call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
+  " 遅延読み込みしたいプラグイン群
+  call dein#load_toml(s:toml_dir . '/dein_lazy.toml', {'lazy': 1})
 
   call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
   call dein#add('Shougo/deoplete.nvim')
@@ -92,38 +96,48 @@ if dein#load_state('~/.cache/dein')
   call dein#add('neoclide/coc.nvim')
   call dein#add('Shougo/defx.nvim')
   call dein#add('markonm/traces.vim')
-
+  call dein#add('doums/darcula')
+  call dein#add('iloginow/vim-stylus')
+  call dein#add('posva/vim-vue')
+  call dein#add('ghifarit53/tokyonight-vim')
+  call dein#add('rakr/vim-one')
+  call dein#add('previm/previm')
+  call dein#add('tpope/vim-endwise')
+  call dein#add('tyru/open-browser.vim')
+  call dein#add('dart-lang/dart-vim-plugin')
+  call dein#add('thosakwe/vim-flutter')
+  call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'],
+                    \ 'build': 'sh -c "cd app && yarn install"' })
   call dein#end()
   call dein#save_state()
 endif
-
 filetype plugin indent on
 syntax enable
-
-
+" tokyo night
+set termguicolors
+" let g:tokyonight_style = 'storm' " available: night, storm
+let g:tokyonight_disable_italic_comment = 1
+colorscheme onedark
+" colorscheme onedark
+let g:lightline = {'colorscheme' : 'tokyonight'}
+let g:airline_theme = "tokyonight"
 " Required:
 filetype plugin indent on
 syntax enable
-
 call map(dein#check_clean(), "delete(v:val, 'rf')")
-
 " If you want to install not installed plugins on startup.
 if dein#check_install()
   call dein#install()
 endif
-
-colorscheme onedark
 "========================================== [ fzf ]
 " fzf commands "
 nnoremap <Leader><C-f> :GFiles<Enter>
 nnoremap <Leader><C-l> :BLines<Return>
 nnoremap <Leader><C-h> :History<Enter>
 nnoremap <Leader>ss :Rg<Enter>
-
 " ff
 command! -bang -nargs=? -complete=dir GFiles
 \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
 " Rg
 command! -bang -nargs=* Rg
 \ call fzf#vim#grep(
@@ -131,11 +145,9 @@ command! -bang -nargs=* Rg
 \ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
 \ : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
 \ <bang>0)
-
 function! s:find_git_root()
   return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
 endfunction
-
 "========================================== [ metals ]
 " metals
 nmap <silent> <Leader>ws <Plug>(coc-metals-expand-decoration)
@@ -153,11 +165,9 @@ function! s:show_documentation()
   endif
 endfunction
 nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
-
 " metals build
 nnoremap call :call CocRequestAsync('metals', 'workspace/executeCommand', { 'command': 'build-import' })
 "============================================ [ other ]
-
 " indent nest
 inoremap {<Enter> {}<Left><CR><ESC><S-o>
 inoremap [<Enter> []<Left><CR><ESC><S-o>
@@ -165,7 +175,7 @@ inoremap (<Enter> ()<Left><CR><ESC><S-o>
 " ====================================== [ defx[tree] ]
 autocmd VimEnter * execute 'Defx'
 nnoremap <silent> <Leader>n :<C-u> Defx <CR>
-
+nnoremap <silent> <Leader>b :Defx `expand('%:p:h')` -search=`expand('%:p')` <Enter>
 call defx#custom#option('_', {
       \ 'winwidth': 70,
       \ 'split': 'floating',
@@ -176,10 +186,8 @@ call defx#custom#option('_', {
       \ 'resume': 1,
       \ 'columns': 'mark:indent:git:icons:filename:type',
       \ })
-
 autocmd BufWritePost * call defx#redraw()
 autocmd BufEnter * call defx#redraw()
-
 autocmd FileType defx call s:defx_my_settings()
 function! s:defx_my_settings() abort
   " Define mappings
@@ -251,7 +259,6 @@ function! s:defx_my_settings() abort
   nnoremap <silent><buffer><expr> cd
   \ defx#do_action('change_vim_cwd')
 endfunction
-
 " Config for defx-git
 call defx#custom#column('git', 'indicators', {
   \ 'Modified'  : '✹',
@@ -263,11 +270,10 @@ call defx#custom#column('git', 'indicators', {
   \ 'Deleted'   : '✖',
   \ 'Unknown'   : '?'
   \ })
-
 " ============================================== [ airline ]
 syntax enable
 set showtabline=2
-let g:airline_theme = 'onedark'
+"let g:airline_theme = 'onedark'
 " powerline enable(最初に設定しないとダメ)
 let g:airline_powerline_fonts = 1
 " タブバーをかっこよく
@@ -276,3 +282,8 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
 " gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
 let g:airline#extensions#hunks#enabled = 0
+autocmd FileType vue syntax sync fromstart
+
+" go plgin
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
