@@ -17,7 +17,7 @@ set expandtab
 set showmatch                       
 set title                             " title
 "set statusline=%{F}
-set noswapfile                        
+set noswapfile                       
 set backspace=indent,eol,start        " backspace
 set nocompatible                      " be iMproved
 set clipboard=unnamed                 " Hello world
@@ -53,7 +53,11 @@ nnoremap <Leader>vs :vsplit<Return>
 nnoremap <Leader>s  :split<Return>
 inoremap <C-g> <ESC>
 noremap <Leader><C-g> :term lazygit<Enter>
-inoremap <TAB> <C-n>
+
+" suggest control
+set completeopt=menuone,noinsert
+inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
+inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 " ====================================================== [ dein ]
 if &compatible
   set nocompatible
@@ -72,9 +76,9 @@ if dein#load_state('~/.cache/dein')
   " dein.toml, dein_layz.tomlファイルのディレクトリをセット
   let s:toml_dir = expand('~/.config/nvim')
   " 起動時に読み込むプラグイン群
-  call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
-  " 遅延読み込みしたいプラグイン群
-  call dein#load_toml(s:toml_dir . '/dein_lazy.toml', {'lazy': 1})
+  " call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
+  " " 遅延読み込みしたいプラグイン群
+  " call dein#load_toml(s:toml_dir . '/dein_lazy.toml', {'lazy': 1})
 
   call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
   call dein#add('Shougo/deoplete.nvim')
@@ -82,6 +86,7 @@ if dein#load_state('~/.cache/dein')
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
   call dein#add('vim-airline/vim-airline')
+  call dein#add('vim-airline/vim-airline-themes')
   call dein#add('joshdick/onedark.vim')
   call dein#add('Yggdroot/indentLine')
   call dein#add('airblade/vim-gitgutter')
@@ -107,6 +112,8 @@ if dein#load_state('~/.cache/dein')
   call dein#add('tyru/open-browser.vim')
   call dein#add('dart-lang/dart-vim-plugin')
   call dein#add('thosakwe/vim-flutter')
+  call dein#add('fatih/vim-go')
+  call dein#add('elzr/vim-json')
   call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'],
                     \ 'build': 'sh -c "cd app && yarn install"' })
   call dein#end()
@@ -285,6 +292,50 @@ let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linen
 let g:airline#extensions#hunks#enabled = 0
 autocmd FileType vue syntax sync fromstart
 
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.maxlinenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" old vim-powerline symbols
+" let g:airline_left_sep = '⮀'
+" let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+" let g:airline_symbols.branch = '⭠'
+" let g:airline_symbols.readonly = '⭤'
+" let g:airline_symbols.linenr = '⭡'
+
+" json
+set conceallevel=0
+let g:vim_json_syntax_conceal = 0
+
 " go plgin
-let g:go_def_mode='gopls'
-let g:go_info_mode='gopls'
+let g:go_null_module_warning = 0
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+let g:go_template_autocreate = 0
+let g:go_fmt_command = "gofmt"
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
